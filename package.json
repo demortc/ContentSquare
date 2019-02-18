@@ -1,0 +1,30 @@
+{
+  "name": "content-square",
+  "version": "0.0.1",
+  "description": "ContentSquare",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "clean": "rimraf lib/*",
+    "precompile": "npm run clean"
+  },
+  "main": "./lib/content-square",
+  "author": {
+    "name": "Corentin Demortier"
+  },
+  "bin": {
+    "content-square": "./bin/content-square"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.14",
+    "rimraf": "^2.6.3",
+    "tslint": "^5.12.1"
+  },
+  "dependencies": {
+    "jake": "^8.0.19",
+    "typescript": "^3.3.3"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  }
+}
