@@ -5,18 +5,18 @@ export interface Coords {
 
 export enum Direction {
   NORTH = "N",
-  EST = "E",
+  EAST = "E",
   WEST = "W",
-  SUD = "S"
+  SOUTH = "S",
 }
 
 export enum Rotation {
   LEFT = "L",
-  RIGHT = "R"
+  RIGHT = "R",
 }
 
 export enum Movement {
-    L = "L",
-    R = "R",
-    F = "F"
+    LEFT = "L",
+    RIGHT = "R",
+    FRONT = "F",
 }

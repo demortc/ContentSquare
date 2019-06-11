@@ -1,35 +1,44 @@
-import {SquareProperties} from "../types/square";
-import {Coords, Movement, Rotation} from "../types/coords";
-import {MowerPosition} from "../types/mower";
-import {Untils} from "./untils";
-import coordsToDirection = Untils.coordsToDirection;
-import rotate = Untils.rotate;
+import { Coords, Movement, Rotation } from "../types/coords";
+import { MowerPosition } from "../types/mower";
+import { SquareProperties } from "../types/square";
+import { Utils } from "./utils";
+import coordsToDirection = Utils.coordsToDirection;
 
 export class Mower {
     private readonly square: SquareProperties;
-    private mowerPosition: MowerPosition;
+    private readonly mowerPosition: MowerPosition;
     private controls: {[key: string]: () => void} = {};
 
     constructor(square: SquareProperties, initialPosition: MowerPosition) {
-        this.square = square;
-        this.mowerPosition = initialPosition;
+        if (initialPosition.pos.x <= square.xMax && initialPosition.pos.x >= 0
+            && initialPosition.pos.y <= square.yMax && initialPosition.pos.y >= 0) {
 
-        this.controls[Movement.F] = this.moveFront.bind(this);
-        this.controls[Movement.L] = this.moveLeft.bind(this);
-        this.controls[Movement.R] = this.moveRight.bind(this);
+            this.square = square;
+            this.mowerPosition = initialPosition;
+
+            this.controls[Movement.FRONT] = this.moveFront.bind(this);
+            this.controls[Movement.LEFT] = this.moveLeft.bind(this);
+            this.controls[Movement.RIGHT] = this.moveRight.bind(this);
+        } else {
+            throw new Error("Mower is out of map");
+        }
     }
 
-
-    control(movement: Movement): void {
-        this.controls[movement]();
+    public control(movement: Movement): void {
+        if (this.controls.hasOwnProperty(movement)) {
+            this.controls[movement]();
+        } else {
+            throw new Error("Invalid movement. Movements should be F, L or R");
+        }
     }
 
-    getPosition(): MowerPosition {
+    public getPosition(): MowerPosition {
         return this.mowerPosition;
     }
 
-    getPositionAsString(): string {
-        return `${this.mowerPosition.pos.x} ${this.mowerPosition.pos.y} ${coordsToDirection(this.mowerPosition.direction)}`;
+    public getPositionAsString(): string {
+        return `${this.mowerPosition.pos.x} ${this.mowerPosition.pos.y}
+            ${coordsToDirection(this.mowerPosition.direction)}`;
     }
 
     protected moveLeft(): void {
@@ -41,9 +50,9 @@ export class Mower {
     }
 
     protected moveFront(): void {
-        let position: Coords = {
+        const position: Coords = {
             x: this.mowerPosition.pos.x + this.mowerPosition.direction.x,
-            y: this.mowerPosition.pos.y + this.mowerPosition.direction.y
+            y: this.mowerPosition.pos.y + this.mowerPosition.direction.y,
         };
 
         if (position.x <= this.square.xMax && position.y <= this.square.yMax && position.x >= 0 && position.y >= 0) {
@@ -52,14 +61,16 @@ export class Mower {
     }
 
     protected rotate(rotation: Rotation): void {
+        const direction: Coords = { ...this.mowerPosition.direction };
+
         switch (rotation) {
             case Rotation.LEFT:
-                this.mowerPosition.direction.x = -this.mowerPosition.direction.y;
-                this.mowerPosition.direction.y = this.mowerPosition.direction.x;
+                this.mowerPosition.direction.x = -direction.y;
+                this.mowerPosition.direction.y = direction.x;
                 break;
             case Rotation.RIGHT:
-                this.mowerPosition.direction.x = this.mowerPosition.direction.y;
-                this.mowerPosition.direction.y = -this.mowerPosition.direction.x;
+                this.mowerPosition.direction.x = direction.y;
+                this.mowerPosition.direction.y = -direction.x;
                 break;
         }
     }

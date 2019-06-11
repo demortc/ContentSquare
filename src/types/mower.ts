@@ -1,4 +1,4 @@
-import {Coords, Direction} from "./coords";
+import { Coords } from "./coords";
 
 export interface MowerPosition {
   pos: Coords;
